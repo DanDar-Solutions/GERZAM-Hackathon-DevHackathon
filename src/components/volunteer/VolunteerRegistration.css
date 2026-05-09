@@ -1,0 +1,75 @@
+.vol-reg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  font-family: 'Sora', sans-serif;
+  padding: 24px;
+  overflow: hidden;
+}
+
+.vol-reg-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  padding-top: 8px;
+}
+
+.vol-reg-confirm-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+}
+
+.vol-reg-confirm-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.vol-reg-confirm-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.vol-reg-confirm-id {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.08em;
+  color: var(--color-accent-dark);
+}
+
+.vol-reg-thankyou {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 16px;
+}
+
+.vol-reg-heart {
+  font-size: 4rem;
+  color: var(--color-accent);
+  font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 48;
+  animation: vol-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes vol-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.85; }
+}
+
+.vol-reg-sub {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}

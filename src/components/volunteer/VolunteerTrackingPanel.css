@@ -1,0 +1,86 @@
+.vtp-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.vtp-sheet {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 20px 24px 36px;
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: vtp-slide-up 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes vtp-slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);   opacity: 1; }
+}
+
+.vtp-title {
+  font-family: 'Lora', serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 8px 0 0;
+}
+
+.vtp-distance {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vtp-distance-icon {
+  font-size: 1.4rem;
+  color: var(--color-accent);
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.vtp-distance-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text);
+  font-family: 'Lora', serif;
+}
+
+.vtp-waiting {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.vtp-done {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: center;
+  padding: 24px 0 16px;
+  margin: 0;
+}
+
+.vtp-close-btn {
+  width: 100%;
+  padding: 13px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: 'Sora', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.vtp-close-btn:hover {
+  background: var(--color-bg);
+}

@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root {
+  /* ─── Warm palette (from question.css) ─── */
+  --color-bg:         #f5f0e8;
+  --color-surface:    #fffdf7;
+  --color-surface-alt:#f0ebe0;
+  --color-text:       #2c2416;
+  --color-text-muted: #7a6e5f;
+  --color-text-faint: #9b8c79;
+  --color-text-inv:   #f5f0e8;
+  --color-border:     rgba(0,0,0,0.08);
+  --color-border-med: rgba(0,0,0,0.10);
+  --color-primary:    #2c2416;
+  --color-primary-hover: #3a3028;
+  --color-accent:     #7ea86a;
+  --color-accent-dark:#5c8c48;
+  --color-danger:     #c0392b;
+  --color-success:    #5c8c48;
+  --color-warning:    #d4a017;
+
+  /* ─── Hazard colours ─── */
+  --color-hazard-low:    #5c8c48;
+  --color-hazard-medium: #d4a017;
+  --color-hazard-high:   #c0392b;
+
+  /* ─── Layout tokens ─── */
+  --banner-height: 52px;
+  --fab-size: 56px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+
+  /* ─── Shadows ─── */
+  --shadow-sm:  0 2px 4px rgba(0,0,0,0.04);
+  --shadow-md:  0 2px 4px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.06);
+  --shadow-lg:  0 4px 16px rgba(44,36,22,0.12);
+  --shadow-overlay: 0 4px 24px rgba(44,36,22,0.18);
+}
+
+html.visual-mode {
+  font-size: 118%;
+
+  --color-bg:         #0d0d0d;
+  --color-surface:    #1a1a1a;
+  --color-surface-alt:#222222;
+  --color-text:       #ffffff;
+  --color-text-muted: #cccccc;
+  --color-text-faint: #aaaaaa;
+  --color-text-inv:   #0d0d0d;
+  --color-border:     rgba(255,255,255,0.25);
+  --color-border-med: rgba(255,255,255,0.35);
+  --color-primary:    #ffffff;
+  --color-primary-hover: #eeeeee;
+  --color-accent:     #ffe033;
+  --color-accent-dark:#ffaa00;
+  --color-danger:     #ff5555;
+  --color-success:    #44ff88;
+  --color-warning:    #ffe033;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Sora', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+button {
+  font-family: 'Sora', sans-serif;
+}
+
+/* ─── Material Symbols utility ─── */
+.icon {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  vertical-align: middle;
+}
+
+/* ─── Shared spinner ─── */
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  margin: 0 auto;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

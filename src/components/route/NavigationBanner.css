@@ -1,0 +1,59 @@
+.nav-banner {
+  position: absolute;
+  top: 72px;
+  left: 12px;
+  right: 12px;
+  z-index: 450;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--color-primary);
+  color: var(--color-text-inv);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  animation: nav-slide-in 0.25s ease;
+}
+
+@keyframes nav-slide-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.nav-banner-icon {
+  font-size: 1.4rem;
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  flex-shrink: 0;
+  color: var(--color-text-inv);
+}
+
+.nav-banner-text {
+  flex: 1;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: 'Sora', sans-serif;
+  line-height: 1.35;
+  color: var(--color-text-inv);
+}
+
+.nav-banner-stop {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--color-text-inv);
+  opacity: 0.8;
+  transition: opacity 0.15s;
+}
+
+.nav-banner-stop:hover {
+  opacity: 1;
+}
+
+.nav-banner-stop .icon {
+  font-size: 1.5rem;
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}

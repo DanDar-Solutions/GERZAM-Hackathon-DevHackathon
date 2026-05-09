@@ -1,0 +1,115 @@
+.hazard-map-container {
+  position: relative;
+  width: 100%;
+  height: calc(100dvh - var(--banner-height));
+}
+
+.hazard-map {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--color-danger);
+  z-index: 400;
+  pointer-events: none;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
+  line-height: 1;
+}
+
+.volunteer-map-btn {
+  position: fixed;
+  bottom: 24px;
+  left: 16px;
+  z-index: 500;
+  padding: 12px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  font-family: 'Sora', sans-serif;
+  transition: all 0.18s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.volunteer-map-btn .icon {
+  font-size: 1.1rem;
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+}
+
+.volunteer-map-btn:hover {
+  background: var(--color-surface-alt);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.volunteer-map-btn:active {
+  transform: translateY(0);
+}
+
+/* ── User location dot marker ───────────────────────────────── */
+.user-dot-wrapper {
+  position: relative;
+  width: 22px;
+  height: 22px;
+}
+
+.user-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #3B82F6;
+  border: 2.5px solid white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  z-index: 2;
+}
+
+.user-dot-pulse {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.2);
+  border: 1.5px solid rgba(59, 130, 246, 0.35);
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  z-index: 1;
+  animation: dot-pulse 2.2s ease-out infinite;
+}
+
+@keyframes dot-pulse {
+  0%   { transform: scale(0.55); opacity: 1; }
+  100% { transform: scale(1.6);  opacity: 0; }
+}
+
+/* Direction cone — points north by default, rotated by heading */
+.user-dot-cone {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 16px solid rgba(59, 130, 246, 0.55);
+  position: absolute;
+  top: -14px;
+  left: 5px;
+  z-index: 3;
+  transform-origin: 6px 25px;
+  transition: transform 0.4s ease;
+}
+
