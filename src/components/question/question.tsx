@@ -63,7 +63,7 @@ const QUESTIONS: QuestionDef[] = [
   },
 ];
 
-export default function Questions() {
+export default function Questions({ onBack }: { onBack?: () => void }) {
   const { completeSurvey } = useProfile();
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>(() => {
@@ -137,7 +137,11 @@ export default function Questions() {
         </div>
 
         <div className="q-nav">
-          <button className="q-btn-back" onClick={() => goTo(current - 1, 'back')} disabled={current === 0}>
+          <button
+            className="q-btn-back"
+            onClick={() => current === 0 ? onBack?.() : goTo(current - 1, 'back')}
+            disabled={current === 0 && !onBack}
+          >
             ← Буцах
           </button>
           <button className="q-btn-next" onClick={handleNext} disabled={!currentAnswer || saving}>

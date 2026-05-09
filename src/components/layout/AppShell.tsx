@@ -44,9 +44,14 @@ export function AppShell() {
     );
   }
 
+  const handleBackToSplash = () => {
+    localStorage.removeItem('accessub-splash');
+    setSplashDone(false);
+  };
+
   if (!splashDone) return <SplashScreen onDone={() => setSplashDone(true)} />;
   if (!user) return <div className="app-loading"><div className="spinner" /></div>;
-  if (!user.surveyCompleted || !profile) return <Questions />;
+  if (!user.surveyCompleted || !profile) return <Questions onBack={handleBackToSplash} />;
 
   return (
     <div className="app-shell">
