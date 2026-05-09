@@ -3,7 +3,6 @@ import { useProfile } from '../../hooks/useProfile';
 import { useVolunteer } from '../../contexts/VolunteerContext';
 import Questions from '../question/question';
 import { SplashScreen } from '../splash/SplashScreen';
-import { TopBanner } from './TopBanner';
 import { HazardMap } from '../map/HazardMap';
 import './AppShell.css';
 
@@ -51,7 +50,6 @@ export function AppShell() {
 
   return (
     <div className="app-shell">
-      <TopBanner />
       <HazardMap />
     </div>
   );

@@ -1,7 +1,7 @@
 .hazard-map-container {
   position: relative;
   width: 100%;
-  height: calc(100dvh - var(--banner-height));
+  height: 100dvh;
 }
 
 .hazard-map {
