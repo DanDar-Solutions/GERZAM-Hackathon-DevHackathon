@@ -5,9 +5,10 @@ import './VolunteerRegistration.css';
 
 interface Props {
   onDone: () => void;
+  onBack?: () => void;
 }
 
-export function VolunteerRegistration({ onDone }: Props) {
+export function VolunteerRegistration({ onDone, onBack }: Props) {
   const { registerVolunteer } = useVolunteer();
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [name, setName] = useState('');
@@ -150,11 +151,11 @@ export function VolunteerRegistration({ onDone }: Props) {
               <button
                 className="q-btn-back"
                 onClick={() => {
-                  if (step === 1) return;
+                  if (step === 1) { onBack?.(); return; }
                   if (step === 3) { setHasCar(null); setCanTransport(null); }
                   setStep((s) => (s - 1) as 1 | 2 | 3 | 4);
                 }}
-                disabled={step === 1}
+                disabled={step === 1 && !onBack}
               >
                 ← Буцах
               </button>

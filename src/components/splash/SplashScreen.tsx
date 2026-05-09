@@ -15,7 +15,7 @@ export function SplashScreen({ onDone }: { onDone: () => void }) {
   };
 
   if (showVolunteerReg) {
-    return <VolunteerRegistration onDone={onDone} />;
+    return <VolunteerRegistration onDone={onDone} onBack={() => setShowVolunteerReg(false)} />;
   }
 
   return (
