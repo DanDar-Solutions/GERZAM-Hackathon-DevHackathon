@@ -1,0 +1,275 @@
+<h2>Weather chip — redesign options</h2>
+<p class="subtitle">The AccessUB banner and app name are removed. The ice risk + temperature indicator moves below the search bar. Which style feels right?</p>
+
+<style>
+  .phone-row {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 24px 0;
+  }
+  .phone-frame {
+    width: 220px;
+    background: #f5f3ee;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    overflow: hidden;
+    font-family: 'Sora', 'Inter', sans-serif;
+    flex-shrink: 0;
+  }
+  .map-bg {
+    position: relative;
+    height: 180px;
+    background: linear-gradient(180deg, #e8e4dc 0%, #d6d0c8 100%);
+  }
+  /* Map grid lines for texture */
+  .map-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(180,175,165,0.4) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(180,175,165,0.4) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .map-overlay {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* Shared search bar style */
+  .search-bar-mock {
+    background: #fff;
+    border-radius: 12px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    font-size: 12px;
+    color: #888;
+  }
+  .search-bar-mock .s-icon {
+    font-size: 14px;
+    color: #bbb;
+  }
+
+  /* ---- Option A: Pill chip ---- */
+  .chip-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    letter-spacing: 0.01em;
+    width: fit-content;
+  }
+  .chip-pill.high { background: linear-gradient(90deg, #c0392b, #e74c3c); }
+  .chip-pill .temp-sep { opacity: 0.65; margin: 0 2px; }
+
+  /* ---- Option B: Frosted glass card ---- */
+  .chip-glass {
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.7);
+    border-radius: 10px;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  }
+  .chip-glass .risk-badge {
+    background: #e74c3c;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .chip-glass .glass-label {
+    font-size: 10px;
+    color: #555;
+    font-weight: 500;
+  }
+  .chip-glass .glass-temp {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-left: auto;
+  }
+
+  /* ---- Option C: Left-accented row ---- */
+  .chip-accent {
+    background: rgba(255,255,255,0.88);
+    border-left: 3px solid #e74c3c;
+    border-radius: 0 8px 8px 0;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.10);
+  }
+  .chip-accent .acc-icon {
+    font-size: 13px;
+  }
+  .chip-accent .acc-text {
+    font-size: 10px;
+    color: #333;
+    font-weight: 600;
+  }
+  .chip-accent .acc-sub {
+    font-size: 9px;
+    color: #888;
+    font-weight: 400;
+  }
+  .chip-accent .acc-temp {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+
+  .phone-label {
+    text-align: center;
+    padding: 10px 8px 12px;
+    font-size: 12px;
+    color: #555;
+    line-height: 1.4;
+  }
+  .phone-label strong { display: block; margin-bottom: 3px; font-size: 13px; color: #222; }
+
+  .option-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    cursor: pointer;
+  }
+  .option-wrapper .opt-card {
+    border: 2.5px solid transparent;
+    border-radius: 22px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    padding: 3px;
+  }
+  .option-wrapper .opt-card.selected-card {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.18);
+  }
+  .select-btn {
+    margin-top: 10px;
+    padding: 5px 18px;
+    border-radius: 99px;
+    border: 1.5px solid #ccc;
+    background: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    color: #444;
+    transition: all 0.13s;
+  }
+  .select-btn:hover { background: #2563eb; color: #fff; border-color: #2563eb; }
+</style>
+
+<div class="phone-row">
+
+  <!-- Option A -->
+  <div class="option-wrapper">
+    <div class="opt-card" id="card-a" onclick="pickOption('a', this)">
+      <div class="phone-frame">
+        <div class="map-bg">
+          <div class="map-overlay">
+            <div class="search-bar-mock">
+              <span class="s-icon">🔍</span> Хаашаа явах вэ?
+            </div>
+            <div>
+              <div class="chip-pill high">
+                🧊 ӨНДӨР &nbsp;<span class="temp-sep">·</span>&nbsp; -18°C
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-label">
+          <strong>A — Colored pill</strong>
+          Compact, bold. Color encodes risk at a glance. Floats freely below the search bar.
+        </div>
+      </div>
+    </div>
+    <button class="select-btn" onclick="pickOption('a', document.getElementById('card-a'))">Select A</button>
+  </div>
+
+  <!-- Option B -->
+  <div class="option-wrapper">
+    <div class="opt-card" id="card-b" onclick="pickOption('b', this)">
+      <div class="phone-frame">
+        <div class="map-bg">
+          <div class="map-overlay">
+            <div class="search-bar-mock">
+              <span class="s-icon">🔍</span> Хаашаа явах вэ?
+            </div>
+            <div class="chip-glass">
+              <span class="risk-badge">ӨНДӨР</span>
+              <span class="glass-label">Мөсний эрсдэл</span>
+              <span class="glass-temp">-18°C</span>
+            </div>
+          </div>
+        </div>
+        <div class="phone-label">
+          <strong>B — Frosted glass card</strong>
+          Wider, more readable. Semi-transparent card with colored risk badge and temperature on the right.
+        </div>
+      </div>
+    </div>
+    <button class="select-btn" onclick="pickOption('b', document.getElementById('card-b'))">Select B</button>
+  </div>
+
+  <!-- Option C -->
+  <div class="option-wrapper">
+    <div class="opt-card" id="card-c" onclick="pickOption('c', this)">
+      <div class="phone-frame">
+        <div class="map-bg">
+          <div class="map-overlay">
+            <div class="search-bar-mock">
+              <span class="s-icon">🔍</span> Хаашаа явах вэ?
+            </div>
+            <div class="chip-accent">
+              <span class="acc-icon">🧊</span>
+              <div>
+                <div class="acc-text">Мөсний эрсдэл ӨНДӨР</div>
+                <div class="acc-sub">Одоо</div>
+              </div>
+              <span class="acc-temp">-18°C</span>
+            </div>
+          </div>
+        </div>
+        <div class="phone-label">
+          <strong>C — Accent-border strip</strong>
+          Full-width strip with colored left border. Clean, minimal — blends with the map edge.
+        </div>
+      </div>
+    </div>
+    <button class="select-btn" onclick="pickOption('c', document.getElementById('card-c'))">Select C</button>
+  </div>
+
+</div>
+
+<script>
+let selected = null;
+function pickOption(choice, cardEl) {
+  if (selected) selected.classList.remove('selected-card');
+  cardEl.classList.add('selected-card');
+  selected = cardEl;
+  window.__companion?.select(choice, 'Option ' + choice.toUpperCase());
+}
+</script>

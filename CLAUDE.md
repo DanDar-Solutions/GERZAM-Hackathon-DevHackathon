@@ -33,7 +33,12 @@ No test framework is configured.
 - `accessub-user` / `accessub-profile` — regular user identity and accessibility profile (two keys, updated independently)
 - `accessub-volunteer` — volunteer session (id, name, has_car, can_transport); presence of this key skips the splash/survey flow entirely
 
-**App entry flow (`AppShell.tsx`):**
+**Accessibility profiles** (`src/types/profile.ts`) — chosen during the onboarding survey, stored in `accessub-profile`:
+- `wheelchair` — avoids obstacles, accent color `#5c8c48`
+- `elderly` — prefers gentle slopes and smooth surfaces, accent color `#9b8c79`
+- `visual` — enables audio/vibration alerts; adds `visual-mode` class to `document.documentElement` for CSS theming, accent color `#d4a017`
+
+**App entry flow (`src/components/layout/AppShell.tsx`):**
 1. If `accessub-volunteer` is in localStorage → skip splash, skip guest login, skip survey → go directly to `HazardMap`
 2. Otherwise → Splash → guest login → profile survey → map
 - Volunteer presence is checked before any other routing logic. All hooks must be declared before conditional returns to satisfy Rules of Hooks.
@@ -43,7 +48,7 @@ No test framework is configured.
 **Data flow for hazards:** `useHazards` hook fetches from Supabase with realtime subscription → starts empty if Supabase unavailable → hazard scoring in `src/lib/hazard-scoring.ts` combines weather + hazard data.
 
 **Key directories:**
-- `src/components/` — organized by feature domain (auth, hazard, map, route, question, splash, volunteer, ui)
+- `src/components/` — organized by feature domain (auth, hazard, map, route, question, splash, volunteer, ui); each component file has a companion `.css` file in the same directory
 - `src/hooks/` — data-fetching and realtime hooks
 - `src/lib/` — API clients and business logic (route-api, weather-api, hazard-scoring, supabase-storage, user-api, haversine)
 - `src/types/` — shared TypeScript interfaces (hazard, profile, route, volunteer)
@@ -138,12 +143,16 @@ The app is fully functional without any external services:
 
 ## Hazard Data Model & Scoring
 
-Hazards are **rectangles**, not points — each has `lat`, `lng`, `width`, `height` (in degrees) to cover a street section. The `source` field distinguishes `'seed'` vs `'user'` reports.
+Hazards are **rectangles**, not points — each has `lat`, `lng`, `width`, `height` (in degrees) to cover a street section. The `source` field distinguishes `'seed'` vs `'user'` reports. Categories: `ice`, `broken` (pavement), `blocked` (path), `slope`.
 
 `src/lib/hazard-scoring.ts` `scoreRoute` function:
 - Checks every 3rd route coordinate (performance) against each hazard's bounding box expanded by `BUFFER_DEG` (0.0002°)
 - Severity is weighted non-linearly: low=1, medium=3, high=5
 - Ice risk from weather integrates via `ICE_RISK_THRESHOLDS`: ≤-15°C = high, ≤-5°C = medium
+
+## Navigation
+
+`useNavigation.ts` + `src/components/route/NavigationBanner.tsx` handle step-by-step navigation once a route is selected. The banner appears above the map and advances through route waypoints. Navigation state lives entirely in the hook; `NavigationBanner` is a pure display component.
 
 ## Supabase Storage (Photos)
 

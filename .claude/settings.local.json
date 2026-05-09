@@ -10,7 +10,15 @@
       "Bash(Select-Object -ExpandProperty FullName)",
       "Bash(npx tsc *)",
       "mcp__Claude_Preview__preview_start",
-      "Bash(Remove-Item \"C:\\\\VS\\\\DevHack\\\\src\\\\components\\\\auth\\\\AuthScreen.tsx\")"
+      "Bash(Remove-Item \"C:\\\\VS\\\\DevHack\\\\src\\\\components\\\\auth\\\\AuthScreen.tsx\")",
+      "Bash(Get-ChildItem -Path \"c:\\\\VS\\\\DevHack - Copy\" -Force)",
+      "Bash(Select-Object -Property Name, Mode)",
+      "Bash(Format-Table -AutoSize)",
+      "Bash(C:/Users/arier/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/skills/brainstorming/scripts/start-server.sh --project-dir \"c:/VS/DevHack - Copy\")",
+      "Bash(git add *)",
+      "Bash(git rm *)",
+      "Bash(Remove-Item \"c:\\\\VS\\\\DevHack - Copy\\\\src\\\\components\\\\layout\\\\TopBanner.tsx\" -Force)",
+      "Bash(Remove-Item \"c:\\\\VS\\\\DevHack - Copy\\\\src\\\\components\\\\layout\\\\TopBanner.css\" -Force)"
     ]
   }
 }

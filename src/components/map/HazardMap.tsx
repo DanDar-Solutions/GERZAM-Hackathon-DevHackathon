@@ -19,6 +19,7 @@ import { VolunteerModal } from '../volunteer/VolunteerModal';
 import { HelpRequestModal } from '../volunteer/HelpRequestModal';
 import { VolunteerTrackingPanel } from '../volunteer/VolunteerTrackingPanel';
 import { SearchBar } from '../ui/SearchBar';
+import { WeatherChip } from '../ui/WeatherChip';
 import { RouteSuggestions } from '../route/RouteSuggestions';
 import { RoutePanel } from '../route/RoutePanel';
 import { NavigationBanner } from '../route/NavigationBanner';
@@ -191,6 +192,8 @@ export function HazardMap() {
         onChange={updateSearch}
         onFocus={focusSearch}
       />
+
+      <WeatherChip />
 
       {showSuggestions && panel !== 'routes' && (
         <RouteSuggestions query={searchQuery} onSelect={selectDestination} />
