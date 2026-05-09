@@ -35,6 +35,12 @@
   background: var(--color-border-med);
   border-radius: 2px;
   margin: 0 auto 18px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.sheet-handle:active {
+  cursor: grabbing;
 }
 
 .sheet-header {

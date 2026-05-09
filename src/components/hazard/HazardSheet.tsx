@@ -1,5 +1,6 @@
 import type { Hazard } from '../../types/hazard';
 import { CATEGORY_LABELS, CATEGORY_ICONS, SEVERITY_LABELS, SEVERITY_COLORS } from '../../types/hazard';
+import { useDragToDismiss } from '../../hooks/useDragToDismiss';
 import './HazardSheet.css';
 
 interface HazardSheetProps {
@@ -17,10 +18,11 @@ function timeAgo(dateStr: string): string {
 }
 
 export function HazardSheet({ hazard, onClose }: HazardSheetProps) {
+  const { sheetRef, onPointerDown, animatedDismiss } = useDragToDismiss(onClose);
   return (
-    <div className="sheet-backdrop" onClick={onClose}>
-      <div className="sheet" onClick={(e) => e.stopPropagation()}>
-        <div className="sheet-handle" />
+    <div className="sheet-backdrop" onClick={animatedDismiss}>
+      <div className="sheet" ref={sheetRef} onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-handle" onPointerDown={onPointerDown} />
 
         <div className="sheet-header">
           <span className="sheet-icon icon">{CATEGORY_ICONS[hazard.category]}</span>
@@ -54,7 +56,7 @@ export function HazardSheet({ hazard, onClose }: HazardSheetProps) {
           <img src={hazard.photo_url} alt="Аюулын зураг" className="sheet-photo" />
         )}
 
-        <button className="sheet-close-btn" onClick={onClose}>
+        <button className="sheet-close-btn" onClick={animatedDismiss}>
           Хаах
         </button>
       </div>

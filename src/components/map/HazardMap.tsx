@@ -77,8 +77,21 @@ export function HazardMap() {
     searchQuery, showSuggestions,
     openReport, openVolunteer, closePanel,
     selectDestination, closeRoutes,
-    updateSearch, focusSearch,
+    updateSearch, focusSearch, dismissSuggestions,
   } = useMapState(planRoutes, clearRoutes, location);
+
+  // Dismiss suggestions when clicking outside the search bar or suggestions list
+  useEffect(() => {
+    if (!showSuggestions) return;
+    const handleMouseDown = (e: MouseEvent) => {
+      const target = e.target as Element;
+      if (!target.closest('.search-bar') && !target.closest('.route-suggestions')) {
+        dismissSuggestions();
+      }
+    };
+    document.addEventListener('mousedown', handleMouseDown);
+    return () => document.removeEventListener('mousedown', handleMouseDown);
+  }, [showSuggestions, dismissSuggestions]);
 
   // Refs so event handlers registered once always see current values
   const hazardsRef = useRef(hazards);

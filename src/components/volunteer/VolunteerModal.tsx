@@ -2,6 +2,7 @@ import { useState, useCallback, useRef } from 'react';
 import { supabase } from '../../config/supabase';
 import { useVolunteers } from '../../hooks/useVolunteers';
 import type { VolunteerWithDistance } from '../../hooks/useVolunteers';
+import { useDragToDismiss } from '../../hooks/useDragToDismiss';
 import './VolunteerModal.css';
 
 interface VolunteerModalProps {
@@ -23,6 +24,7 @@ export function VolunteerModal({ onClose, userLat, userLng, onRequestSent }: Vol
   const [confirmed, setConfirmed] = useState(false);
   const [calling, setCalling] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { sheetRef, onPointerDown, animatedDismiss } = useDragToDismiss(onClose);
 
   const selectedVol = volunteers.find((v) => v.id === selected) ?? null;
 
@@ -65,9 +67,9 @@ export function VolunteerModal({ onClose, userLat, userLng, onRequestSent }: Vol
   };
 
   return (
-    <div className="sheet-backdrop" onClick={onClose}>
-      <div className="sheet volunteer-sheet" onClick={(e) => e.stopPropagation()}>
-        <div className="sheet-handle" />
+    <div className="sheet-backdrop" onClick={animatedDismiss}>
+      <div className="sheet volunteer-sheet" ref={sheetRef} onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-handle" onPointerDown={onPointerDown} />
 
         {loading ? (
           <div className="volunteer-loading">
@@ -79,7 +81,7 @@ export function VolunteerModal({ onClose, userLat, userLng, onRequestSent }: Vol
             {volunteers.length === 0 ? (
               <>
                 <h3 className="volunteer-title">Ойролцоо идэвхтэй сайн дурынхан олдсонгүй</h3>
-                <button className="sheet-close-btn" onClick={onClose}>Хаах</button>
+                <button className="sheet-close-btn" onClick={animatedDismiss}>Хаах</button>
               </>
             ) : (
               <>
@@ -115,7 +117,7 @@ export function VolunteerModal({ onClose, userLat, userLng, onRequestSent }: Vol
                   </button>
                 ) : null}
 
-                {!confirmed && <button className="sheet-close-btn" onClick={onClose}>Хаах</button>}
+                {!confirmed && <button className="sheet-close-btn" onClick={animatedDismiss}>Хаах</button>}
               </>
             )}
           </div>

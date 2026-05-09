@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { MiniMap } from './MiniMap';
 import type { HelpRequest } from '../../types/volunteer';
+import { useDragToDismiss } from '../../hooks/useDragToDismiss';
 import './HelpRequestModal.css';
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
 export function HelpRequestModal({ request, hasCar, onRespond, onComplete }: Props) {
   const [accepted, setAccepted] = useState(false);
   const [busy, setBusy] = useState(false);
+  const { sheetRef, onPointerDown } = useDragToDismiss(() => !accepted && onRespond(false));
 
   const handleAnswer = async (yes: boolean) => {
     setBusy(true);
@@ -29,8 +31,8 @@ export function HelpRequestModal({ request, hasCar, onRespond, onComplete }: Pro
 
   return (
     <div className="hrm-overlay">
-      <div className="hrm-sheet">
-        <div className="sheet-handle" />
+      <div className="hrm-sheet" ref={sheetRef}>
+        <div className="sheet-handle" onPointerDown={onPointerDown} />
 
         {!accepted ? (
           <>

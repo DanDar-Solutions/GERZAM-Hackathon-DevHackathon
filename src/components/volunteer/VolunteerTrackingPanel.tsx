@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { MiniMap } from './MiniMap';
 import { haversineMeters } from '../../lib/haversine';
 import { useRequestTracking } from '../../hooks/useHelpRequest';
+import { useDragToDismiss } from '../../hooks/useDragToDismiss';
 import type { UserLocation } from '../../hooks/useUserLocation';
 import './VolunteerTrackingPanel.css';
 
@@ -13,6 +14,7 @@ interface Props {
 
 export function VolunteerTrackingPanel({ requestId, userLocation, onClose }: Props) {
   const { requestStatus, volunteerLat, volunteerLng } = useRequestTracking(requestId);
+  const { sheetRef, onPointerDown, animatedDismiss } = useDragToDismiss(onClose);
 
   const distanceM = useMemo(() => {
     if (
@@ -43,7 +45,7 @@ export function VolunteerTrackingPanel({ requestId, userLocation, onClose }: Pro
               ? 'Сайн дурынхан ирлээ. Баярлалаа!'
               : 'Сайн дурынхан татгалзлаа.'}
           </p>
-          <button className="vtp-close-btn" onClick={onClose}>Хаах</button>
+          <button className="vtp-close-btn" onClick={animatedDismiss}>Хаах</button>
         </div>
       </div>
     );
@@ -51,8 +53,8 @@ export function VolunteerTrackingPanel({ requestId, userLocation, onClose }: Pro
 
   return (
     <div className="vtp-overlay">
-      <div className="vtp-sheet">
-        <div className="sheet-handle" />
+      <div className="vtp-sheet" ref={sheetRef}>
+        <div className="sheet-handle" onPointerDown={onPointerDown} />
         <h3 className="vtp-title">Сайн дурын ажилтан яваа байна</h3>
 
         {distanceM != null ? (
@@ -70,7 +72,7 @@ export function VolunteerTrackingPanel({ requestId, userLocation, onClose }: Pro
 
         {pins.length > 0 && <MiniMap pins={pins} zoom={15} />}
 
-        <button className="vtp-close-btn" onClick={onClose}>Хаах</button>
+        <button className="vtp-close-btn" onClick={animatedDismiss}>Хаах</button>
       </div>
     </div>
   );

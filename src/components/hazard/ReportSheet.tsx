@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import type { HazardCategory } from '../../types/hazard';
 import { CATEGORY_LABELS, CATEGORY_ICONS } from '../../types/hazard';
 import { uploadHazardPhoto } from '../../lib/supabase-storage';
+import { useDragToDismiss } from '../../hooks/useDragToDismiss';
 import './ReportSheet.css';
 
 type SubmitData = {
@@ -30,6 +31,7 @@ export function ReportSheet({ mapCenter, userLocation, onSubmit, onClose }: Repo
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const { sheetRef, onPointerDown, animatedDismiss } = useDragToDismiss(onClose);
 
   function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -59,7 +61,7 @@ export function ReportSheet({ mapCenter, userLocation, onSubmit, onClose }: Repo
 
   if (submitted) {
     return (
-      <div className="sheet-backdrop" onClick={onClose}>
+      <div className="sheet-backdrop" onClick={animatedDismiss}>
         <div className="sheet report-sheet" onClick={(e) => e.stopPropagation()}>
           <div className="report-success">
             <span className="report-success-icon icon">check_circle</span>
@@ -72,8 +74,8 @@ export function ReportSheet({ mapCenter, userLocation, onSubmit, onClose }: Repo
 
   return (
     <div className="sheet-backdrop" onClick={onClose}>
-      <div className="sheet report-sheet" onClick={(e) => e.stopPropagation()}>
-        <div className="sheet-handle" />
+      <div className="sheet report-sheet" ref={sheetRef} onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-handle" onPointerDown={onPointerDown} />
         <h3 className="report-title">Аюул мэдээлэх</h3>
 
         <button

@@ -18,7 +18,7 @@ export function RouteSuggestions({ query, onSelect }: RouteSuggestionsProps) {
 
   return (
     <div className="route-suggestions">
-      {filtered.map((loc) => (
+      {filtered.map((loc) => ( 
         <button
           key={loc.id}
           className="route-suggestion-item"

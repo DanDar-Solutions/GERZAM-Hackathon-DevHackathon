@@ -52,6 +52,7 @@ export function useMapState(
   );
 
   const focusSearch = useCallback(() => setShowSuggestions(true), []);
+  const dismissSuggestions = useCallback(() => setShowSuggestions(false), []);
 
   return {
     selectedHazard, setSelectedHazard,
@@ -60,6 +61,6 @@ export function useMapState(
     searchQuery, showSuggestions,
     openReport, openVolunteer, closePanel,
     selectDestination, closeRoutes,
-    updateSearch, focusSearch,
+    updateSearch, focusSearch, dismissSuggestions,
   };
 }
