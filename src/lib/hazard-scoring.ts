@@ -14,7 +14,7 @@ export function scoreRoute(
     slope: 0,
   };
 
-  for (let i = 0; i < routeCoords.length; i += 3) {
+  for (let i = 0; i < routeCoords.length; i++) {
     const [lng, lat] = routeCoords[i];
 
     for (const h of hazards) {

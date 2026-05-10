@@ -13,7 +13,7 @@ export function useRoutes(hazards: Hazard[]) {
       setLoading(true);
       setRoutes([]);
 
-      const features = await fetchRoutes(start, end);
+      const features = await fetchRoutes(start, end, hazards);
       const scored: ScoredRoute[] = features.map((f: RouteFeature) => ({
         geometry: f,
         distance: f.properties.summary.distance,
