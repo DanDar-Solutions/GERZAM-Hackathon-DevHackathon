@@ -27,12 +27,12 @@ async function orsRequest(
   key: string,
   start: { lat: number; lng: number },
   end: { lat: number; lng: number },
-  options?: Record<string, unknown>
-): Promise<RouteFeature | null> {
+  extra?: Record<string, unknown>
+): Promise<RouteFeature[]> {
   const body: Record<string, unknown> = {
     coordinates: [[start.lng, start.lat], [end.lng, end.lat]],
+    ...extra,
   };
-  if (options) body.options = options;
 
   const res = await fetch(ORS_API_URL, {
     method: 'POST',
@@ -42,8 +42,7 @@ async function orsRequest(
 
   if (!res.ok) throw new Error(`ORS ${res.status}`);
   const json = await res.json();
-  const features = json.features as RouteFeature[] | undefined;
-  return features?.[0] ?? null;
+  return (json.features as RouteFeature[] | undefined) ?? [];
 }
 
 export async function fetchRoutes(
@@ -60,14 +59,13 @@ export async function fetchRoutes(
     const avoidPolygons = buildAvoidPolygons(hazards);
 
     if (avoidPolygons) {
-      // Run both in parallel: one avoids hazard polygons, one is the fastest direct route
       const [safeResult, directResult] = await Promise.allSettled([
-        orsRequest(key, start, end, { avoid_polygons: avoidPolygons }),
+        orsRequest(key, start, end, { options: { avoid_polygons: avoidPolygons } }),
         orsRequest(key, start, end),
       ]);
 
-      const safeRoute = safeResult.status === 'fulfilled' ? safeResult.value : null;
-      const directRoute = directResult.status === 'fulfilled' ? directResult.value : null;
+      const safeRoute = safeResult.status === 'fulfilled' ? safeResult.value[0] : null;
+      const directRoute = directResult.status === 'fulfilled' ? directResult.value[0] : null;
 
       const results: RouteFeature[] = [];
       if (safeRoute) results.push(safeRoute);
@@ -79,19 +77,10 @@ export async function fetchRoutes(
       }
       if (results.length > 0) return results;
     } else {
-      const res = await fetch(ORS_API_URL, {
-        method: 'POST',
-        headers: { Authorization: key, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          coordinates: [[start.lng, start.lat], [end.lng, end.lat]],
-          alternative_routes: { target_count: 2, weight_factor: 1.6, share_factor: 0.6 },
-        }),
+      const features = await orsRequest(key, start, end, {
+        alternative_routes: { target_count: 2, weight_factor: 1.6, share_factor: 0.6 },
       });
-
-      if (!res.ok) throw new Error(`ORS ${res.status}`);
-      const json = await res.json();
-      const features = json.features as RouteFeature[] | undefined;
-      if (features && features.length > 0) return features;
+      if (features.length > 0) return features;
     }
 
     return fallbackRoutes.routes;

@@ -9,10 +9,15 @@ export interface AppUser {
   profile?: ProfileType;
 }
 
-/* ── Mapping from Supabase row → AppUser ── */
+interface UserRow {
+  id: string;
+  name: string;
+  mongolian_id: string;
+  survey_completed: boolean | null;
+  profile_type: string | null;
+}
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function rowToUser(row: any): { user: AppUser; profile: ProfileType | null } {
+function rowToUser(row: UserRow): { user: AppUser; profile: ProfileType | null } {
   return {
     user: {
       id: row.id,
@@ -20,7 +25,7 @@ function rowToUser(row: any): { user: AppUser; profile: ProfileType | null } {
       mongolianId: row.mongolian_id,
       surveyCompleted: row.survey_completed ?? false,
     },
-    profile: row.profile_type ?? null,
+    profile: (row.profile_type as ProfileType) ?? null,
   };
 }
 
@@ -29,7 +34,7 @@ function rowToUser(row: any): { user: AppUser; profile: ProfileType | null } {
 export async function fetchUserById(id: string): Promise<{ user: AppUser; profile: ProfileType | null } | null> {
   if (!supabase) return null;
   const { data } = await supabase.from('users').select('*').eq('id', id).single();
-  return data ? rowToUser(data) : null;
+  return data ? rowToUser(data as UserRow) : null;
 }
 
 export async function fetchOrCreateUser(
@@ -47,14 +52,14 @@ export async function fetchOrCreateUser(
   const { data: existing } = await supabase
     .from('users').select('*').eq('mongolian_id', mongolianId).single();
 
-  if (existing) return rowToUser(existing);
+  if (existing) return rowToUser(existing as UserRow);
 
   // Create new user
   const { data: created, error } = await supabase
     .from('users').insert({ name, mongolian_id: mongolianId }).select().single();
 
   if (error) throw new Error('Бүртгэл амжилтгүй боллоо');
-  return rowToUser(created);
+  return rowToUser(created as UserRow);
 }
 
 export async function saveSurvey(

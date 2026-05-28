@@ -4,13 +4,10 @@ import type { Hazard } from '../types/hazard';
 
 export function useHazards() {
   const [hazards, setHazards] = useState<Hazard[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!supabase);
 
   useEffect(() => {
-    if (!supabase) {
-      setLoading(false);
-      return;
-    }
+    if (!supabase) return;
 
     let cancelled = false;
     let channel: ReturnType<typeof supabase.channel> | null = null;
@@ -23,8 +20,9 @@ export function useHazards() {
       }
       setLoading(false);
 
+      if (cancelled) return;
       channel = supabase!
-        .channel('hazards-realtime')
+        .channel(`hazards-realtime-${Date.now()}`)
         .on(
           'postgres_changes',
           { event: 'INSERT', schema: 'accessub', table: 'hazards' },
@@ -39,7 +37,7 @@ export function useHazards() {
 
     return () => {
       cancelled = true;
-      if (channel) channel.unsubscribe();
+      if (channel) supabase!.removeChannel(channel);
     };
   }, []);
 

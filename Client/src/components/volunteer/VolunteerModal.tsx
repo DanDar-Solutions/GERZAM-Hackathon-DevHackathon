@@ -3,6 +3,7 @@ import { supabase } from '../../config/supabase';
 import { useVolunteers } from '../../hooks/useVolunteers';
 import type { VolunteerWithDistance } from '../../hooks/useVolunteers';
 import { useDragToDismiss } from '../../hooks/useDragToDismiss';
+import { formatDistanceApprox } from '../../lib/formatting';
 import './VolunteerModal.css';
 
 interface VolunteerModalProps {
@@ -10,12 +11,6 @@ interface VolunteerModalProps {
   userLat: number | null;
   userLng: number | null;
   onRequestSent: (requestId: string) => void;
-}
-
-function formatDistance(m: number | null): string {
-  if (m == null) return 'байршил тодорхойгүй';
-  if (m < 1000) return `~${Math.round(m)}м`;
-  return `~${(m / 1000).toFixed(1)}км`;
 }
 
 export function VolunteerModal({ onClose, userLat, userLng, onRequestSent }: VolunteerModalProps) {
@@ -98,7 +93,7 @@ export function VolunteerModal({ onClose, userLat, userLng, onRequestSent }: Vol
                         <div className="volunteer-avatar"><span className="icon">person</span></div>
                         <div className="volunteer-info">
                           <div className="volunteer-name">{v.name}</div>
-                          <div className="volunteer-meta">{formatDistance(v.distanceM)}</div>
+                          <div className="volunteer-meta">{formatDistanceApprox(v.distanceM)}</div>
                         </div>
                       </div>
                       <div className={`volunteer-vehicle${veh.accessible ? ' accessible' : ''}`}>

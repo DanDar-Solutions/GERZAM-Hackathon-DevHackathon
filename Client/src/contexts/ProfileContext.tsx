@@ -15,6 +15,7 @@ export interface ProfileContextValue {
   logout: () => void;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const ProfileContext = createContext<ProfileContextValue>({
   user: null,
   profile: null,
@@ -36,34 +37,38 @@ function clearLocal() {
   localStorage.removeItem('accessub-profile');
 }
 
+function loadStoredUser(): { user: AppUser; profile: ProfileType | null } | null {
+  try {
+    const raw = localStorage.getItem('accessub-user');
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return { user: parsed, profile: parsed.profile ?? null };
+  } catch {
+    return null;
+  }
+}
+
 export function ProfileProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AppUser | null>(null);
-  const [profile, setProfile] = useState<ProfileType | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [stored] = useState(loadStoredUser);
+  const [user, setUser] = useState<AppUser | null>(stored?.user ?? null);
+  const [profile, setProfile] = useState<ProfileType | null>(stored?.profile ?? null);
+  const [loading, setLoading] = useState(stored !== null);
 
-  // Restore session from localStorage, sync with Supabase if available
   useEffect(() => {
-    const stored = localStorage.getItem('accessub-user');
-    if (!stored) { setLoading(false); return; }
+    if (!stored) return;
 
-    try {
-      const parsed = JSON.parse(stored);
-      setUser(parsed);
-      if (parsed.profile) setProfile(parsed.profile);
-
-      fetchUserById(parsed.id).then((result) => {
-        if (result) {
-          setUser(result.user);
-          if (result.profile) setProfile(result.profile);
-          saveLocal(result.user, result.profile);
-        }
-        setLoading(false);
-      });
-    } catch {
+    fetchUserById(stored.user.id).then((result) => {
+      if (result) {
+        setUser(result.user);
+        if (result.profile) setProfile(result.profile);
+        saveLocal(result.user, result.profile);
+      }
+      setLoading(false);
+    }).catch(() => {
       clearLocal();
       setLoading(false);
-    }
-  }, []);
+    });
+  }, [stored]);
 
   const login = useCallback(async (name: string, mongolianId: string) => {
     const { user: u, profile: p } = await fetchOrCreateUser(name, mongolianId);

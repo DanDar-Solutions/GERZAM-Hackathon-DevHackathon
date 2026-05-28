@@ -10,20 +10,25 @@ export function useIncomingRequest(volunteerId: string | null) {
   useEffect(() => {
     if (!supabase || !volunteerId) return;
     const db = supabase;
+    let removed = false;
 
     const channel = db
-      .channel(`help-req-v-${volunteerId}`)
+      .channel(`help-req-v-${volunteerId}-${Date.now()}`)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'accessub', table: 'help_requests', filter: `volunteer_id=eq.${volunteerId}` },
         (payload) => {
+          if (removed) return;
           const req = payload.new as HelpRequest;
           if (req.status === 'pending') setIncomingRequest(req);
         },
       )
       .subscribe();
 
-    return () => { db.removeChannel(channel); };
+    return () => {
+      removed = true;
+      db.removeChannel(channel);
+    };
   }, [volunteerId]);
 
   const respondToRequest = useCallback(
@@ -71,19 +76,21 @@ export function useRequestTracking(requestId: string | null) {
   useEffect(() => {
     if (!supabase || !requestId) return;
     const db = supabase;
+    let removed = false;
 
     db.from('help_requests').select('*').eq('id', requestId).single().then(({ data }) => {
-      if (!data) return;
+      if (removed || !data) return;
       setRequestStatus(data.status);
       setVolunteerId(data.volunteer_id);
     });
 
     const reqChannel = db
-      .channel(`help-req-r-${requestId}`)
+      .channel(`help-req-r-${requestId}-${Date.now()}`)
       .on(
         'postgres_changes',
         { event: 'UPDATE', schema: 'accessub', table: 'help_requests', filter: `id=eq.${requestId}` },
         (payload) => {
+          if (removed) return;
           const req = payload.new as HelpRequest;
           setRequestStatus(req.status);
           setVolunteerId(req.volunteer_id);
@@ -91,25 +98,30 @@ export function useRequestTracking(requestId: string | null) {
       )
       .subscribe();
 
-    return () => { db.removeChannel(reqChannel); };
+    return () => {
+      removed = true;
+      db.removeChannel(reqChannel);
+    };
   }, [requestId]);
 
   useEffect(() => {
     if (!supabase || !volunteerId) return;
     const db = supabase;
+    let removed = false;
 
     db.from('volunteers').select('lat,lng').eq('id', volunteerId).single().then(({ data }) => {
-      if (!data) return;
+      if (removed || !data) return;
       setVolunteerLat(data.lat ?? null);
       setVolunteerLng(data.lng ?? null);
     });
 
     const volChannel = db
-      .channel(`vol-loc-${volunteerId}`)
+      .channel(`vol-loc-${volunteerId}-${Date.now()}`)
       .on(
         'postgres_changes',
         { event: 'UPDATE', schema: 'accessub', table: 'volunteers', filter: `id=eq.${volunteerId}` },
         (payload) => {
+          if (removed) return;
           const vol = payload.new as Volunteer;
           setVolunteerLat(vol.lat ?? null);
           setVolunteerLng(vol.lng ?? null);
@@ -117,7 +129,10 @@ export function useRequestTracking(requestId: string | null) {
       )
       .subscribe();
 
-    return () => { db.removeChannel(volChannel); };
+    return () => {
+      removed = true;
+      db.removeChannel(volChannel);
+    };
   }, [volunteerId]);
 
   return { requestStatus, volunteerLat, volunteerLng, volunteerId };

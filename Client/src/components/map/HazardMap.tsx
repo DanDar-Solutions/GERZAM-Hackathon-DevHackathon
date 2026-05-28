@@ -146,7 +146,7 @@ export function HazardMap() {
       markerRef.current = null;
       flewToUserRef.current = false;
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   useMapLayers(mapRef, hazardsRef, setSelectedHazardRef, setMapCenterRef);
 

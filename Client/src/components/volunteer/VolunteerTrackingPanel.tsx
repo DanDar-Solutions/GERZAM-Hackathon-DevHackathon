@@ -51,6 +51,20 @@ export function VolunteerTrackingPanel({ requestId, userLocation, onClose }: Pro
     );
   }
 
+  if (requestStatus === null || requestStatus === 'pending') {
+    return (
+      <div className="vtp-overlay">
+        <div className="vtp-sheet" ref={sheetRef}>
+          <div className="sheet-handle" onPointerDown={onPointerDown} />
+          <h3 className="vtp-title">Хүсэлт илгээгдлээ</h3>
+          <p className="vtp-waiting">Сайн дурын ажилтан хариу өгөхийг хүлээж байна...</p>
+          <div className="spinner" style={{ margin: '16px auto' }} />
+          <button className="vtp-close-btn" onClick={animatedDismiss}>Цуцлах</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="vtp-overlay">
       <div className="vtp-sheet" ref={sheetRef}>

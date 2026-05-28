@@ -14,20 +14,23 @@ export function useVolunteerSession(location: UserLocation | null) {
     const db = supabase;
     const id = volunteer.id;
 
-    db.from('volunteers').update({ is_online: true }).eq('id', id);
+    db.from('volunteers')
+      .update({ is_online: true, last_seen: new Date().toISOString() })
+      .eq('id', id)
+      .then();
 
     const intervalId = setInterval(() => {
       const loc = locationRef.current;
-      if (!loc) return;
-      db.from('volunteers').update({
-        lat: loc.lat,
-        lng: loc.lng,
-        last_seen: new Date().toISOString(),
-      }).eq('id', id);
+      const update: Record<string, unknown> = { is_online: true, last_seen: new Date().toISOString() };
+      if (loc) { update.lat = loc.lat; update.lng = loc.lng; }
+      db.from('volunteers').update(update).eq('id', id).then();
     }, VOLUNTEER_UPDATE_INTERVAL_MS);
 
     const goOffline = () => {
-      db.from('volunteers').update({ is_online: false }).eq('id', id);
+      db.from('volunteers')
+        .update({ is_online: false })
+        .eq('id', id)
+        .then();
     };
 
     let hideTimer: ReturnType<typeof setTimeout> | null = null;

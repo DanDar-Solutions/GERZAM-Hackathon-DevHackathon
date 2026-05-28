@@ -1,16 +1,7 @@
 import type { Hazard, HazardCategory } from '../types/hazard';
 import { BUFFER_DEG } from '../config/constants';
-
-const EARTH_R = 6371000;
-
-export function haversineM(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const φ1 = (lat1 * Math.PI) / 180;
-  const φ2 = (lat2 * Math.PI) / 180;
-  const dφ = ((lat2 - lat1) * Math.PI) / 180;
-  const dλ = ((lng2 - lng1) * Math.PI) / 180;
-  const a = Math.sin(dφ / 2) ** 2 + Math.cos(φ1) * Math.cos(φ2) * Math.sin(dλ / 2) ** 2;
-  return EARTH_R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
+import { haversineMeters } from './haversine';
+import { isPointInHazardBounds } from './hazard-geo';
 
 function bearingDeg(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const φ1 = (lat1 * Math.PI) / 180;
@@ -42,7 +33,7 @@ export function findHazardsAhead(
   let nearestDist = Infinity;
   for (let i = 0; i < routeCoords.length; i++) {
     const [lng, lat] = routeCoords[i];
-    const d = haversineM(userLat, userLng, lat, lng);
+    const d = haversineMeters(userLat, userLng, lat, lng);
     if (d < nearestDist) { nearestDist = d; nearestIdx = i; }
   }
 
@@ -52,7 +43,7 @@ export function findHazardsAhead(
   for (let i = nearestIdx; i < routeCoords.length - 1; i++) {
     const [lng1, lat1] = routeCoords[i];
     const [lng2, lat2] = routeCoords[i + 1];
-    cumDist += haversineM(lat1, lng1, lat2, lng2);
+    cumDist += haversineMeters(lat1, lng1, lat2, lng2);
     lookaheadCoords.push(routeCoords[i + 1]);
     if (cumDist >= lookaheadM) break;
   }
@@ -61,9 +52,7 @@ export function findHazardsAhead(
   const nextIdx = Math.min(nearestIdx + 1, routeCoords.length - 1);
   const [curLng, curLat] = routeCoords[nearestIdx];
   const [nextLng, nextLat] = routeCoords[nextIdx];
-  const routeBearing = nearestIdx < routeCoords.length - 1
-    ? bearingDeg(curLat, curLng, nextLat, nextLng)
-    : bearingDeg(curLat, curLng, nextLat, nextLng); // same fallback
+  const routeBearing = bearingDeg(curLat, curLng, nextLat, nextLng);
 
   const buf = BUFFER_DEG + 0.0003;
   const results: HazardAhead[] = [];
@@ -73,17 +62,14 @@ export function findHazardsAhead(
     if (seen.has(hazard.id)) continue;
 
     const hit = lookaheadCoords.some(([lng, lat]) =>
-      lat >= hazard.lat - buf &&
-      lat <= hazard.lat + hazard.height + buf &&
-      lng >= hazard.lng - buf &&
-      lng <= hazard.lng + hazard.width + buf,
+      isPointInHazardBounds(lat, lng, hazard, buf),
     );
     if (!hit) continue;
     seen.add(hazard.id);
 
     const hCenterLat = hazard.lat + hazard.height / 2;
     const hCenterLng = hazard.lng + hazard.width / 2;
-    const distM = haversineM(userLat, userLng, hCenterLat, hCenterLng);
+    const distM = haversineMeters(userLat, userLng, hCenterLat, hCenterLng);
     const hazardBearing = bearingDeg(userLat, userLng, hCenterLat, hCenterLng);
     const relAngle = ((hazardBearing - routeBearing) + 360) % 360;
     const side: 'left' | 'right' | 'ahead' =

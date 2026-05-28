@@ -1,9 +1,11 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { MAP_CENTER } from '../config/constants';
 import type { Hazard } from '../types/hazard';
 import type { DemoLocation } from '../types/route';
 
 export type Panel = 'none' | 'report' | 'routes' | 'volunteer';
+
+const DEFAULT_CENTER = { lat: MAP_CENTER[1], lng: MAP_CENTER[0] };
 
 export function useMapState(
   planRoutes: (start: { lat: number; lng: number }, end: { lat: number; lng: number }) => Promise<void>,
@@ -12,12 +14,9 @@ export function useMapState(
 ) {
   const [selectedHazard, setSelectedHazard] = useState<Hazard | null>(null);
   const [panel, setPanel] = useState<Panel>('none');
-  const [mapCenter, setMapCenter] = useState({ lat: MAP_CENTER[1], lng: MAP_CENTER[0] });
+  const [mapCenter, setMapCenter] = useState(DEFAULT_CENTER);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
-
-  const userLocationRef = useRef(userLocation);
-  useEffect(() => { userLocationRef.current = userLocation; }, [userLocation]);
 
   const noOverlay = panel === 'none';
 
@@ -30,10 +29,10 @@ export function useMapState(
       setSearchQuery(loc.name);
       setShowSuggestions(false);
       setPanel('routes');
-      const start = userLocationRef.current ?? { lat: MAP_CENTER[1], lng: MAP_CENTER[0] };
+      const start = userLocation ?? DEFAULT_CENTER;
       planRoutes(start, { lat: loc.lat, lng: loc.lng });
     },
-    [planRoutes],
+    [planRoutes, userLocation],
   );
 
   const closeRoutes = useCallback(() => {

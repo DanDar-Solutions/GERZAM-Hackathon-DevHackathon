@@ -1,47 +1,33 @@
-import type { Hazard, HazardCategory } from '../types/hazard';
+import type { Hazard, HazardCategory, Severity } from '../types/hazard';
 import type { RouteScore } from '../types/route';
 import { BUFFER_DEG } from '../config/constants';
+import { isPointInHazardBounds } from './hazard-geo';
+
+const SEVERITY_WEIGHTS: Record<Severity, number> = { low: 1, medium: 3, high: 5 };
 
 export function scoreRoute(
   routeCoords: [number, number][],
   hazards: Hazard[]
 ): RouteScore {
-  const hitIds = new Set<string>();
+  const hits = new Map<string, Hazard>();
   const hazardsByCategory: Record<HazardCategory, number> = {
-    ice: 0,
-    broken: 0,
-    blocked: 0,
-    slope: 0,
+    ice: 0, broken: 0, blocked: 0, slope: 0,
   };
 
-  for (let i = 0; i < routeCoords.length; i++) {
-    const [lng, lat] = routeCoords[i];
-
+  for (const [lng, lat] of routeCoords) {
     for (const h of hazards) {
-      if (hitIds.has(h.id)) continue;
-
-      const minLat = h.lat - BUFFER_DEG;
-      const maxLat = h.lat + h.height + BUFFER_DEG;
-      const minLng = h.lng - BUFFER_DEG;
-      const maxLng = h.lng + h.width + BUFFER_DEG;
-
-      if (lat >= minLat && lat <= maxLat && lng >= minLng && lng <= maxLng) {
-        hitIds.add(h.id);
+      if (hits.has(h.id)) continue;
+      if (isPointInHazardBounds(lat, lng, h, BUFFER_DEG)) {
+        hits.set(h.id, h);
         hazardsByCategory[h.category]++;
       }
     }
   }
 
-  const weights = { low: 1, medium: 3, high: 5 };
   let weightedScore = 0;
-  for (const id of hitIds) {
-    const h = hazards.find((hz) => hz.id === id);
-    if (h) weightedScore += weights[h.severity];
+  for (const h of hits.values()) {
+    weightedScore += SEVERITY_WEIGHTS[h.severity];
   }
 
-  return {
-    totalHazards: hitIds.size,
-    weightedScore,
-    hazardsByCategory,
-  };
+  return { totalHazards: hits.size, weightedScore, hazardsByCategory };
 }

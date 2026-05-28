@@ -2,6 +2,7 @@ import type { ScoredRoute } from '../../types/route';
 import type { ProfileType } from '../../types/profile';
 import type { HazardCategory } from '../../types/hazard';
 import { CATEGORY_LABELS, CATEGORY_ICONS } from '../../types/hazard';
+import { formatDistance } from '../../lib/formatting';
 import './RouteCard.css';
 
 interface RouteCardProps {
@@ -12,11 +13,6 @@ interface RouteCardProps {
 function formatDuration(seconds: number): string {
   const mins = Math.round(seconds / 60);
   return `${mins} мин`;
-}
-
-function formatDistance(meters: number): string {
-  if (meters >= 1000) return `${(meters / 1000).toFixed(1)} км`;
-  return `${Math.round(meters)} м`;
 }
 
 const PROFILE_WARNINGS: Record<ProfileType, { category: HazardCategory; msg: (n: number) => string }[]> = {

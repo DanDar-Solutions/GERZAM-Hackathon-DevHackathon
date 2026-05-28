@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useProfile } from '../../hooks/useProfile';
 import { useVolunteer } from '../../contexts/VolunteerContext';
-import Questions from '../question/question';
+import Questions from '../question/Questions';
 import { SplashScreen } from '../splash/SplashScreen';
 import { HazardMap } from '../map/HazardMap';
 import './AppShell.css';

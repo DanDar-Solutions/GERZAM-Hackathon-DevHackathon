@@ -10,13 +10,10 @@ export type VolunteerWithDistance = Volunteer & { distanceM: number | null };
 
 export function useVolunteers(userLat: number | null, userLng: number | null) {
   const [volunteers, setVolunteers] = useState<VolunteerWithDistance[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!supabase);
 
   useEffect(() => {
-    if (!supabase) {
-      setLoading(false);
-      return;
-    }
+    if (!supabase) return;
 
     supabase
       .from('volunteers')

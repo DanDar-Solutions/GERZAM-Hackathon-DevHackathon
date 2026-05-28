@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useVolunteer } from '../../contexts/VolunteerContext';
 import '../question/question.css';
 import './VolunteerRegistration.css';
@@ -16,31 +16,33 @@ export function VolunteerRegistration({ onDone, onBack }: Props) {
   const [hasCar, setHasCar] = useState<boolean | null>(null);
   const [canTransport, setCanTransport] = useState<boolean | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const navTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  // On entering step 4: save to DB then navigate
   useEffect(() => {
-    if (step !== 4) return;
-    let navTimer: ReturnType<typeof setTimeout>;
-    setSubmitting(true);
-    registerVolunteer({
-      name: name.trim(),
-      register_id: registerId.trim(),
-      has_car: hasCar ?? false,
-      can_transport: canTransport ?? false,
-    }).then(() => {
-      setSubmitting(false);
-      navTimer = setTimeout(onDone, 2000);
-    });
-    return () => clearTimeout(navTimer);
-  }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
+    return () => { if (navTimerRef.current) clearTimeout(navTimerRef.current); };
+  }, []);
 
-  const goToStep4 = () => setStep(4);
+  const submitRegistration = useCallback(async () => {
+    setStep(4);
+    setSubmitting(true);
+    try {
+      await registerVolunteer({
+        name: name.trim(),
+        register_id: registerId.trim(),
+        has_car: hasCar ?? false,
+        can_transport: canTransport ?? false,
+      });
+    } finally {
+      setSubmitting(false);
+    }
+    navTimerRef.current = setTimeout(onDone, 2000);
+  }, [name, registerId, hasCar, canTransport, registerVolunteer, onDone]);
 
   const handleStep3Answer = (answer: boolean) => {
     setHasCar(answer);
     if (!answer) {
       setCanTransport(false);
-      goToStep4();
+      submitRegistration();
     }
   };
 
@@ -125,10 +127,10 @@ export function VolunteerRegistration({ onDone, onBack }: Props) {
                 </>
               ) : (
                 <>
-                  <button className="q-option" onClick={() => { setCanTransport(true); goToStep4(); }}>
+                  <button className="q-option" onClick={() => { setCanTransport(true); submitRegistration(); }}>
                     <span className="icon">airline_seat_recline_normal</span> Тийм
                   </button>
-                  <button className="q-option" onClick={() => { setCanTransport(false); goToStep4(); }}>
+                  <button className="q-option" onClick={() => { setCanTransport(false); submitRegistration(); }}>
                     <span className="icon">do_not_disturb</span> Үгүй
                   </button>
                 </>

@@ -9,15 +9,13 @@ export interface UserLocation {
 
 export function useUserLocation(): { location: UserLocation | null; error: string | null } {
   const [location, setLocation] = useState<UserLocation | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(
+    () => !navigator.geolocation ? 'Байрлал тодорхойлох боломжгүй' : null,
+  );
   const headingRef = useRef<number | null>(null);
 
-  // Geolocation watch
   useEffect(() => {
-    if (!navigator.geolocation) {
-      setError('Байрлал тодорхойлох боломжгүй');
-      return;
-    }
+    if (!navigator.geolocation) return;
 
     const watchId = navigator.geolocation.watchPosition(
       (pos) => {

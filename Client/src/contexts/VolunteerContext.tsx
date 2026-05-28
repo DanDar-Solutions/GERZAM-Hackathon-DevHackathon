@@ -67,6 +67,7 @@ export function VolunteerProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useVolunteer(): VolunteerContextValue {
   const ctx = useContext(VolunteerContext);
   if (!ctx) throw new Error('useVolunteer must be used inside VolunteerProvider');
