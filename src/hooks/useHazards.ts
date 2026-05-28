@@ -12,10 +12,12 @@ export function useHazards() {
       return;
     }
 
+    let cancelled = false;
     let channel: ReturnType<typeof supabase.channel> | null = null;
 
     async function init() {
       const { data, error } = await supabase!.from('hazards').select('*');
+      if (cancelled) return;
       if (!error && data && data.length > 0) {
         setHazards(data as Hazard[]);
       }
@@ -25,7 +27,7 @@ export function useHazards() {
         .channel('hazards-realtime')
         .on(
           'postgres_changes',
-          { event: 'INSERT', schema: 'public', table: 'hazards' },
+          { event: 'INSERT', schema: 'accessub', table: 'hazards' },
           (payload) => {
             setHazards((prev) => [...prev, payload.new as Hazard]);
           }
@@ -36,6 +38,7 @@ export function useHazards() {
     init();
 
     return () => {
+      cancelled = true;
       if (channel) channel.unsubscribe();
     };
   }, []);

@@ -15,7 +15,7 @@ export function useIncomingRequest(volunteerId: string | null) {
       .channel(`help-req-v-${volunteerId}`)
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'help_requests', filter: `volunteer_id=eq.${volunteerId}` },
+        { event: 'INSERT', schema: 'accessub', table: 'help_requests', filter: `volunteer_id=eq.${volunteerId}` },
         (payload) => {
           const req = payload.new as HelpRequest;
           if (req.status === 'pending') setIncomingRequest(req);
@@ -82,7 +82,7 @@ export function useRequestTracking(requestId: string | null) {
       .channel(`help-req-r-${requestId}`)
       .on(
         'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'help_requests', filter: `id=eq.${requestId}` },
+        { event: 'UPDATE', schema: 'accessub', table: 'help_requests', filter: `id=eq.${requestId}` },
         (payload) => {
           const req = payload.new as HelpRequest;
           setRequestStatus(req.status);
@@ -108,7 +108,7 @@ export function useRequestTracking(requestId: string | null) {
       .channel(`vol-loc-${volunteerId}`)
       .on(
         'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'volunteers', filter: `id=eq.${volunteerId}` },
+        { event: 'UPDATE', schema: 'accessub', table: 'volunteers', filter: `id=eq.${volunteerId}` },
         (payload) => {
           const vol = payload.new as Volunteer;
           setVolunteerLat(vol.lat ?? null);
