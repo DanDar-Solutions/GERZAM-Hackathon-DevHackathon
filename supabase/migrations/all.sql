@@ -1,7 +1,7 @@
 -- WARNING: This schema is for context only and is not meant to be run.
 -- Table order and constraints may not be valid for execution.
 
-CREATE TABLE public.hazards (
+CREATE TABLE accessub.hazards (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   lat double precision NOT NULL,
   lng double precision NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE public.hazards (
   reporter_id text,
   CONSTRAINT hazards_pkey PRIMARY KEY (id)
 );
-CREATE TABLE public.help_requests (
+CREATE TABLE accessub.help_requests (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   requester_lat double precision NOT NULL,
   requester_lng double precision NOT NULL,
@@ -24,9 +24,9 @@ CREATE TABLE public.help_requests (
   status text DEFAULT 'pending'::text,
   created_at timestamp with time zone DEFAULT now(),
   CONSTRAINT help_requests_pkey PRIMARY KEY (id),
-  CONSTRAINT help_requests_volunteer_id_fkey FOREIGN KEY (volunteer_id) REFERENCES public.volunteers(id)
+  CONSTRAINT help_requests_volunteer_id_fkey FOREIGN KEY (volunteer_id) REFERENCES accessub.volunteers(id)
 );
-CREATE TABLE public.users (
+CREATE TABLE accessub.users (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   name text NOT NULL,
   mongolian_id text NOT NULL UNIQUE,
@@ -39,7 +39,7 @@ CREATE TABLE public.users (
   created_at timestamp with time zone DEFAULT now(),
   CONSTRAINT users_pkey PRIMARY KEY (id)
 );
-CREATE TABLE public.volunteers (
+CREATE TABLE accessub.volunteers (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   name text NOT NULL,
   register_id text NOT NULL,
