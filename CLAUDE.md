@@ -167,6 +167,6 @@ Hazards are **rectangles**, not points — each has `lat`, `lng`, `width`, `heig
 ## Environment Variables
 
 All prefixed with `VITE_` (Vite convention for client-side exposure):
-- `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` — Supabase connection
+- `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` — Supabase connection
 - `VITE_ORS_API_KEY` — OpenRouteService routing
 - `VITE_OWM_API_KEY` — OpenWeatherMap weather data
