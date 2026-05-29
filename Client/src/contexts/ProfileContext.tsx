@@ -1,6 +1,6 @@
 import { createContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import type { ProfileType } from '../types/profile';
-import { type AppUser, fetchUserById, fetchOrCreateUser, saveSurvey } from '../lib/user-api';
+import { type AppUser, fetchUserById, saveSurvey } from '../lib/user-api';
 
 export type { AppUser };
 
@@ -8,11 +8,8 @@ export interface ProfileContextValue {
   user: AppUser | null;
   profile: ProfileType | null;
   loading: boolean;
-  login: (name: string, mongolianId: string) => Promise<void>;
   loginAsGuest: () => void;
   completeSurvey: (answers: Record<string, string>, profileType: ProfileType) => Promise<void>;
-  selectProfile: (p: ProfileType) => void;
-  logout: () => void;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -20,11 +17,8 @@ export const ProfileContext = createContext<ProfileContextValue>({
   user: null,
   profile: null,
   loading: true,
-  login: async () => {},
   loginAsGuest: () => {},
   completeSurvey: async () => {},
-  selectProfile: () => {},
-  logout: () => {},
 });
 
 function saveLocal(user: AppUser, profile: ProfileType | null) {
@@ -70,13 +64,6 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     });
   }, [stored]);
 
-  const login = useCallback(async (name: string, mongolianId: string) => {
-    const { user: u, profile: p } = await fetchOrCreateUser(name, mongolianId);
-    setUser(u);
-    if (p) setProfile(p);
-    saveLocal(u, p);
-  }, []);
-
   const loginAsGuest = useCallback(() => {
     const u: AppUser = { id: crypto.randomUUID(), name: 'Зочин', mongolianId: '', surveyCompleted: false };
     setUser(u);
@@ -93,19 +80,8 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     saveLocal(updated, profileType);
   }, [user]);
 
-  const selectProfile = useCallback((p: ProfileType) => {
-    setProfile(p);
-    localStorage.setItem('accessub-profile', p);
-  }, []);
-
-  const logout = useCallback(() => {
-    setUser(null);
-    setProfile(null);
-    clearLocal();
-  }, []);
-
   return (
-    <ProfileContext.Provider value={{ user, profile, loading, login, loginAsGuest, completeSurvey, selectProfile, logout }}>
+    <ProfileContext.Provider value={{ user, profile, loading, loginAsGuest, completeSurvey }}>
       {children}
     </ProfileContext.Provider>
   );

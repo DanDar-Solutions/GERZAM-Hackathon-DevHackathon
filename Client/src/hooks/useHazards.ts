@@ -4,7 +4,6 @@ import type { Hazard } from '../types/hazard';
 
 export function useHazards() {
   const [hazards, setHazards] = useState<Hazard[]>([]);
-  const [loading, setLoading] = useState(!!supabase);
 
   useEffect(() => {
     if (!supabase) return;
@@ -18,7 +17,6 @@ export function useHazards() {
       if (!error && data && data.length > 0) {
         setHazards(data as Hazard[]);
       }
-      setLoading(false);
 
       if (cancelled) return;
       channel = supabase!
@@ -65,5 +63,5 @@ export function useHazards() {
     []
   );
 
-  return { hazards, loading, addHazard };
+  return { hazards, addHazard };
 }

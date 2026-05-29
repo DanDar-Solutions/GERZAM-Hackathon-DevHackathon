@@ -4,6 +4,15 @@ import { HAZARD_TILE_OPACITY, HAZARD_TILE_WEIGHT } from '../config/constants';
 import { CATEGORY_COLORS, type Hazard } from '../types/hazard';
 import type { ScoredRoute } from '../types/route';
 
+// Maps a hazard's `category` property to its color; shared by the fill and outline layers.
+const categoryColor = ['match', ['get', 'category'],
+  'ice', CATEGORY_COLORS.ice,
+  'blocked', CATEGORY_COLORS.blocked,
+  'broken', CATEGORY_COLORS.broken,
+  'slope', CATEGORY_COLORS.slope,
+  CATEGORY_COLORS.broken,
+] as maplibregl.ExpressionSpecification;
+
 export function hazardsToGeoJSON(hazards: Hazard[]) {
   return {
     type: 'FeatureCollection' as const,
@@ -56,13 +65,7 @@ export function useMapLayers(
         type: 'fill',
         source: 'hazards',
         paint: {
-          'fill-color': ['match', ['get', 'category'],
-            'ice', CATEGORY_COLORS.ice,
-            'blocked', CATEGORY_COLORS.blocked,
-            'broken', CATEGORY_COLORS.broken,
-            'slope', CATEGORY_COLORS.slope,
-            CATEGORY_COLORS.broken,
-          ] as maplibregl.ExpressionSpecification,
+          'fill-color': categoryColor,
           'fill-opacity': HAZARD_TILE_OPACITY,
         },
       });
@@ -71,13 +74,7 @@ export function useMapLayers(
         type: 'line',
         source: 'hazards',
         paint: {
-          'line-color': ['match', ['get', 'category'],
-            'ice', CATEGORY_COLORS.ice,
-            'blocked', CATEGORY_COLORS.blocked,
-            'broken', CATEGORY_COLORS.broken,
-            'slope', CATEGORY_COLORS.slope,
-            CATEGORY_COLORS.broken,
-          ] as maplibregl.ExpressionSpecification,
+          'line-color': categoryColor,
           'line-width': HAZARD_TILE_WEIGHT,
         },
       });

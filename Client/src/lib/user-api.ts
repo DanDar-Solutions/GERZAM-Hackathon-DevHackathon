@@ -37,31 +37,6 @@ export async function fetchUserById(id: string): Promise<{ user: AppUser; profil
   return data ? rowToUser(data as UserRow) : null;
 }
 
-export async function fetchOrCreateUser(
-  name: string,
-  mongolianId: string,
-): Promise<{ user: AppUser; profile: ProfileType | null }> {
-  if (!supabase) {
-    return {
-      user: { id: crypto.randomUUID(), name, mongolianId, surveyCompleted: false },
-      profile: null,
-    };
-  }
-
-  // Try to find existing user
-  const { data: existing } = await supabase
-    .from('users').select('*').eq('mongolian_id', mongolianId).single();
-
-  if (existing) return rowToUser(existing as UserRow);
-
-  // Create new user
-  const { data: created, error } = await supabase
-    .from('users').insert({ name, mongolian_id: mongolianId }).select().single();
-
-  if (error) throw new Error('Бүртгэл амжилтгүй боллоо');
-  return rowToUser(created as UserRow);
-}
-
 export async function saveSurvey(
   userId: string,
   answers: Record<string, string>,
