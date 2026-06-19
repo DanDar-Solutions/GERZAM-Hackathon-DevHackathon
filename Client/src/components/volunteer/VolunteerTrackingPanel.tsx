@@ -42,7 +42,7 @@ export function VolunteerTrackingPanel({ requestId, userLocation, onClose }: Pro
         <div className="vtp-sheet">
           <p className="vtp-done">
             {requestStatus === 'completed'
-              ? 'Сайн дурынхан ирлээ. Баярлалаа!'
+              ? 'Сайн дурын ажилтан ирлээ. Баярлалаа!'
               : 'Сайн ажилтан татгалзлаа.'}
           </p>
           <button className="vtp-close-btn" onClick={animatedDismiss}>Хаах</button>
