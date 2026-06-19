@@ -109,7 +109,7 @@ export default function Questions({ onBack }: { onBack?: () => void }) {
 
       <div className="q-shell">
         <div className="q-header">
-          <span className="q-brand">GERZAM</span>
+          <span className="q-brand">Гэрзам</span>
           <span className="q-step-badge">{current + 1} / {QUESTIONS.length}</span>
         </div>
 

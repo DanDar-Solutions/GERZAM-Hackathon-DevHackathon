@@ -85,7 +85,7 @@ export function ReportSheet({ mapCenter, userLocation, onSubmit, onClose }: Repo
           {photoPreview ? (
             <img src={photoPreview} alt="Preview" className="report-photo-preview" />
           ) : (
-            <span><span className="icon">photo_camera</span> Зураг авах / сонгох</span>
+            <span><span className="icon">photo_camera</span> Зураг авах / оруулах</span>
           )}
         </button>
         <input

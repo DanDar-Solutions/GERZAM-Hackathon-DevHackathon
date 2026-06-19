@@ -43,7 +43,7 @@ export function VolunteerTrackingPanel({ requestId, userLocation, onClose }: Pro
           <p className="vtp-done">
             {requestStatus === 'completed'
               ? 'Сайн дурынхан ирлээ. Баярлалаа!'
-              : 'Сайн дурынхан татгалзлаа.'}
+              : 'Сайн ажилтан татгалзлаа.'}
           </p>
           <button className="vtp-close-btn" onClick={animatedDismiss}>Хаах</button>
         </div>
@@ -69,7 +69,7 @@ export function VolunteerTrackingPanel({ requestId, userLocation, onClose }: Pro
     <div className="vtp-overlay">
       <div className="vtp-sheet" ref={sheetRef}>
         <div className="sheet-handle" onPointerDown={onPointerDown} />
-        <h3 className="vtp-title">Сайн дурын ажилтан яваа байна</h3>
+        <h3 className="vtp-title">Сайн дурын ажилтан очиж байна</h3>
 
         {distanceM != null ? (
           <div className="vtp-distance">

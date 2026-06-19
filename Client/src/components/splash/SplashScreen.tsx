@@ -24,7 +24,7 @@ export function SplashScreen({ onDone }: { onDone: () => void }) {
       <div className="q-blob q-blob-2" />
       <div className="q-shell">
         <div className="q-header">
-          <span className="q-brand">GERZAM</span>
+          <span className="q-brand">Гэрзам</span>
         </div>
         <div className="q-card q-slide-in">
           <div className="q-category-tag">Улаанбаатарыг аюулгүй, саадгүй туулъя</div>

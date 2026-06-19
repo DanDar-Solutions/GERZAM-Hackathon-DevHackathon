@@ -21,7 +21,7 @@ export const CATEGORY_LABELS: Record<HazardCategory, string> = {
   ice: 'Мөс',
   broken: 'Эвдэрсэн',
   blocked: 'Хаалттай',
-  slope: 'Налуу',
+  slope: 'Хэт Налуу',
 };
 
 export const CATEGORY_ICONS: Record<HazardCategory, string> = {
